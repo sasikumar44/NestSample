@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import {
   CreateStudentDto,
   UpdateStudentDto,
@@ -12,25 +20,35 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
-  getStudents(): FindStudentResponesDto[] {
-    return this.studentService.getStudents();
+  async getStudents() {
+    const data = await this.studentService.getStudents();
+    return data;
   }
+
   @Get('/:studentId')
-  getStudentById(
-    @Param('studentId') studnetID: string,
-  ): FindStudentResponesDto {
-    return this.studentService.getStudentById(studnetID);
+  async getStudentById(@Param('studentId') studentId: string) {
+    const data = await this.studentService.getStudentById(studentId);
+    return data;
   }
+
   @Post()
-  createStudent(@Body() body: CreateStudentDto): StudentResponesDto {
-    return this.studentService.createStudent(body);
+  async createStudent(@Body() body: CreateStudentDto) {
+    const data = await this.studentService.createStudent(body);
+    return { message: 'Post created !!', data };
   }
 
   @Put('/:studentId')
-  updateStudent(
+  async updateStudent(
     @Param('studentId') studentId: string,
     @Body() body: UpdateStudentDto,
-  ): StudentResponesDto {
-    return this.studentService.updateStudent(body, studentId);
+  ) {
+    let data = await this.studentService.updateStudent(studentId, body);
+    return { message: 'updated student data', data };
+  }
+
+  @Delete('/:studentId')
+  async deleteStudent(@Param('studentId') studentId: string) {
+    const data = await this.studentService.deleteStudent(studentId);
+    return { message: 'Student Removed', data };
   }
 }

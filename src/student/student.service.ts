@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Post } from '@nestjs/common';
 import { students } from 'src/db';
 import {
   CreateStudentDto,
@@ -7,50 +7,46 @@ import {
   UpdateStudentDto,
 } from './dto/student.dto';
 import { v4 as uuid } from 'uuid';
+import { Student } from './student.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StudentService {
+  constructor(
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
+  ) {}
+
   students = students;
-  getStudents(): FindStudentResponesDto[] {
-    return this.students;
+  async getStudents() {
+    return await this.studentRepository.find();
   }
 
-  getStudentById(studentId: string): FindStudentResponesDto {
-    return this.students.find((student) => {
-      return student.id === studentId;
-    });
+  async getStudentById(studentId: string) {
+    const student = await this.studentRepository.findOne(studentId);
+    return student;
   }
 
-  createStudent(payload: CreateStudentDto): StudentResponesDto {
-    let newStudent = {
-      id: uuid(),
-      ...payload,
-    };
-    this.students.push(newStudent);
-    return newStudent;
+  async createStudent(payload: CreateStudentDto) {
+    const student = this.studentRepository.create(payload);
+    return await this.studentRepository.save(student);
   }
 
-  updateStudent(payload: UpdateStudentDto, studentId: string) {
-    let updatedStudent: StudentResponesDto;
+  async updateStudent(studentId: string, payload: UpdateStudentDto) {
+    const student = await this.getStudentById(studentId);
+    const editedStudent = Object.assign(student, payload);
+    return await this.studentRepository.save(editedStudent);
+  }
 
-    const updatedStudentList = this.students.map((student) => {
-      if (student.id === studentId) {
-        updatedStudent = {
-          id: studentId,
-          ...payload,
-        };
-        return updatedStudent;
-      } else return student;
-    });
-
-    this.students = updatedStudentList;
-
-    return updatedStudent;
+  async deleteStudent(studentId: string) {
+    const student = await this.getStudentById(studentId);
+    return await this.studentRepository.remove(student);
   }
 
   getStudentByTeacherId(teacherId: string): FindStudentResponesDto[] {
     return this.students.filter((student) => {
-      return student.teacher===teacherId;
+      return student.teacher === teacherId;
     });
   }
 
