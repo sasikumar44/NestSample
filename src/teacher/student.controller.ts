@@ -11,7 +11,7 @@ export class StudentTeacherController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
-  getStudents(@Param('teacherId') teacherId: string): FindStudentResponesDto[] {
+  async getStudents(@Param('teacherId') teacherId: string) {
     return this.studentService.getStudentByTeacherId(teacherId);
   }
 

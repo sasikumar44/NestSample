@@ -1,18 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { teachers } from '../db';
 import { FindTeacherResponseDto } from './dto/teacher.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Teacher } from '../teacher/teacher.entity';
 
 @Injectable()
 export class TeacherService {
-  private teachers = teachers;
+  constructor(
+    @InjectRepository(Teacher)
+    private readonly teacherRepository: Repository<Teacher>,
+  ) {}
 
-  getTeachers(): FindTeacherResponseDto[] {
-    return this.teachers;
-  }
+ async getTeachers() {
+  return await this.teacherRepository.find();
+}
 
-  getTeacherById(id: string): FindTeacherResponseDto {
-    return this.teachers.find((teacher) => {
-      return teacher.id === id;
-    });
-  }
+async  getTeacherById(teacherId: string) {
+  const teacher = await this.teacherRepository.findOne(teacherId);
+  return teacher;
+}
 }

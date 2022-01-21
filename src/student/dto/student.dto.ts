@@ -11,6 +11,8 @@ export class StudentResponesDto {
 export class CreateStudentDto {
   name: string;
   teacher: string;
+  grade: string;
+  address: string;
 }
 
 export class UpdateStudentDto {

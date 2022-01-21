@@ -8,6 +8,7 @@ import {
 } from './dto/student.dto';
 import { v4 as uuid } from 'uuid';
 import { Student } from './student.entity';
+import { Teacher } from '../teacher/teacher.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,7 +16,9 @@ import { Repository } from 'typeorm';
 export class StudentService {
   constructor(
     @InjectRepository(Student)
+    // @InjectRepository(Teacher)
     private readonly studentRepository: Repository<Student>,
+    // private readonly teacherRepository: Repository<Teacher>,
   ) {}
 
   students = students;
@@ -44,10 +47,14 @@ export class StudentService {
     return await this.studentRepository.remove(student);
   }
 
-  getStudentByTeacherId(teacherId: string): FindStudentResponesDto[] {
-    return this.students.filter((student) => {
-      return student.teacher === teacherId;
-    });
+  async getStudentByTeacherId(teacherId: string) {
+    const student = await this.studentRepository.find();
+
+    const query = this.studentRepository
+      .createQueryBuilder('students')
+      .where('students.teacher = :id', { id: teacherId })
+      .getMany();
+    return query;
   }
 
   updateStudentTeacher(
