@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { teachers } from '../db';
-import { FindTeacherResponseDto } from './dto/teacher.dto';
+import { CreateTeacherDto, FindTeacherResponseDto } from './dto/teacher.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Teacher } from '../teacher/teacher.entity';
@@ -19,5 +19,10 @@ export class TeacherService {
 async  getTeacherById(teacherId: string) {
   const teacher = await this.teacherRepository.findOne(teacherId);
   return teacher;
+}
+
+async createTeacher(payload: CreateTeacherDto) {
+  const student = this.teacherRepository.create(payload);
+  return await this.teacherRepository.save(student);
 }
 }
