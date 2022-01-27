@@ -20,7 +20,7 @@ export class Student {
   teacher: string;
 
   @Column({ type: 'text', nullable: false })
-  grade: string;
+  grade: Number;
 
   @Column({ type: 'text', nullable: false })
   address: string;
