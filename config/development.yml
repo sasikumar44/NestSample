@@ -1,0 +1,16 @@
+server:
+    port: 5000
+    hostedDomain: 'localhost:5000'
+
+db:
+    host: '127.0.0.1'
+    database: 'trakee'
+    username: 'root'
+    port: 3306
+    password: 'rootCode'
+    synchronize: true
+    logging: true
+
+jwt:
+    secret: '*mZmQ##-$$$maCnWRgRpHkYJh'
+    

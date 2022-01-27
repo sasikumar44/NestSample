@@ -14,3 +14,14 @@ export class CreateUserDto {
     @IsNotEmpty()
     password:string;
 }
+
+export class LoginUserDto {
+    @ApiProperty()
+    @IsEmail()
+    email:string
+
+    @ApiProperty()
+    @IsNotEmpty()
+    password:string;
+
+}
